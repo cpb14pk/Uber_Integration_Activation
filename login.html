@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Uber Eats Merchant Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="uber-background">
+    <div class="card">
+        <h1>Uber Eats Merchant Portal</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% for category, message in messages %}
+            <div class="alert {{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endwith %}
+        
+        <form method="GET" action="/login">
+            <button type="submit" class="uber-btn">
+                Login with Uber
+            </button>
+        </form>    
+      </div>
+</body>
+</html>

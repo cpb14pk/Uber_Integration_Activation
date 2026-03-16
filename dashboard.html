@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="pos-container">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="logo">UBER Integration</div>
+        <div class="nav-item active">Dashboard</div>
+        <div class="nav-item logout">
+          <a href="/logout">Logout</a>
+        </div>
+      </div>
+
+      <!-- Main Area -->
+      <div class="main">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %} {% for
+        category, message in messages %}
+        <div class="alert {{ category }}">{{ message }}</div>
+        {% endfor %} {% endwith %}
+
+        <!-- Linked Stores -->
+        <div class="panel">
+          <h2>Stores</h2>
+
+          <table class="store-table">
+            <thead>
+              <tr>
+                <th>Store Name</th>
+                <th>Address</th>
+                <th>Store ID</th>
+                <th>Activation Status</th>
+                <th>Menus</th>
+                <th>Take Offline</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for store in stores %}
+              <tr>
+                <td>{{ store.name if store.name else "N/A"}}</td>
+                <td>
+                  {{ store.location.address if store.location else "N/A" }}
+                </td>
+                <td class="store-id">{{ store.store_id }}</td>
+
+                <td>
+                  {% if store.pos_data and store.pos_data.integration_enabled %}
+                  <span class="status-active">Activated</span>
+                  {% else %}
+                  <form method="POST" action="/link_store">
+                    <input
+                      type="hidden"
+                      name="store_id"
+                      value="{{store.store_id}}"
+                    />
+                    <button type="submit" class="primary-btn">Activate</button>
+                  </form>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if store.pos_data and store.pos_data.integration_enabled %}
+                  <a
+                    class="secondary-btn"
+                    href="/menus?store_id={{store.store_id}}&store_name={{store.name}}">Menus</a>
+                  {% else %}
+                  <span class="disabled-btn">Activate First</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if store.pos_data and store.pos_data.integration_enabled %}
+                  <a
+                    class="secondary-btn"
+                    href="/delete_store?store_id=097cdc22-88dc-45c7-a33c-df292048c1bd">De-activate</a>
+                  {% else %}
+                  <span class="disabled-btn">Activate First</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% else %}
+              <tr>
+                <td colspan="5" class="empty-state">No stores available.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
