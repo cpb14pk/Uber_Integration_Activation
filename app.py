@@ -64,7 +64,6 @@ def callback():
     
     # retrieve code from URL args
     code = request.args.get("code")
-    print(code)
     if not code:
         return "No authorization code returned", 400
 
@@ -169,7 +168,7 @@ def delete_store():
 
     # Get the store_id from the ui table
     store_id = request.args.get("store_id")
-    logger.info(f"Linking Store ID {store_id}")
+    logger.info(f"De-activating Store ID {store_id}")
 
     headers = {
         "Authorization": f"Bearer {session['access_token']}",
@@ -189,6 +188,7 @@ def delete_store():
         flash(f"Store {store_id} successfully deleted!", "success")
     except requests.exceptions.HTTPError as e:
         logger.error("Store de-activate failed: %s", response.text)
+        logger.error(response.status_code)
         error_message = response.json().get("message", "Unknown error")
         flash(f"Store de-activate failed: {error_message}", "error")
     return redirect(url_for("dashboard"))
